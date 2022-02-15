@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button{
+    @apply px-3 py-1 border-2 rounded-md hover:bg-blue-400 hover:drop-shadow-lg border-slate-600
+}
+
+input{
+    @apply rounded-md border-2 bg-slate-700 border-slate-600 px-1 box-border mx-1
+}
+
+button.primary{
+    @apply hover:bg-blue-600 bg-blue-400 border-blue-400 text-neutral-100
+}
