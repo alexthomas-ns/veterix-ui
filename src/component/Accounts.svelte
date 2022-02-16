@@ -16,7 +16,7 @@
     {:then accounts}
         <div class="grid grid-cols-5">
         {#each accounts as account}
-            <Account bind:account/>
+            <Account bind:account on:requestRefresh={()=>{accountsPromise=getAccounts()}}/>
         {/each}
         </div>
     {:catch error}

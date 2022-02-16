@@ -34,7 +34,7 @@ interface PaymentInformation {
 const accountEntity = rootEntity.getReference<AccountEntity>("accounts");
 
 export function getAccounts(): Promise<Readonly<Array<Account>>> {
-    return accountEntity.getData().then(s => s.accountList);
+    return accountEntity.getData(true).then(s => s.accountList);
 }
 
 export async function updateAccount(account: Account): Promise<Account> {
@@ -44,4 +44,8 @@ export async function updateAccount(account: Account): Promise<Account> {
 export async function saveAccount(account: Account): Promise<Account> {
     const {name, email, phoneNumber, address} = account;
     return rootEntity.postReference("accounts", {name, email, phoneNumber, address})
+}
+
+export async function deleteAccount(account: Account):Promise<never>{
+   return fromEntity(account).deleteReference("self");
 }

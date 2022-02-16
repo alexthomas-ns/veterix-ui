@@ -115,6 +115,11 @@ export class LinkedResponse<T extends Linked&Embeddible> {
         const postUrl = await this.resolveReference(reference,params);
         return await client.post(postUrl, {json: value}).json<M>();
     }
+
+    public async deleteReference(reference:keyof T["links"]|keyof T["_links"],params?:object):Promise<never>{
+        const deleteUrl = await this.resolveReference(reference,params);
+        return client.delete(deleteUrl).then();
+    }
 }
 
 export interface Link {
