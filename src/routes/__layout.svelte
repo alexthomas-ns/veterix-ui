@@ -5,6 +5,6 @@
 </script>
 
 <Navbar/>
-<div class="m-3 container">
+<div class="m-3 lg:container">
     <slot/>
 </div>
