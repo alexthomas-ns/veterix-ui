@@ -21,33 +21,37 @@
 {#if error}
     <p class="text-2xl text-red-700">{error}</p>
 {/if}
-<tr>
-    {#if (editing)}
-        <td><input bind:value={account.name} placeholder="Name"></td>
-        <td><input bind:value={account.email} placeholder="Email"></td>
-        <td><input bind:value={account.phoneNumber} placeholder="Phone Number"></td>
-        <td><input bind:value={account.address} placeholder="Address"></td>
-        <td>
-            <button on:click={save}>
-                <Fa icon={faSave}/>
-            </button>
-        </td>
-    {:else }
-        <td>{account.name}</td>
-        <td>{account.email}</td>
-        <td>{account.phoneNumber}</td>
-        <td>{account.address}</td>
-        <td>
-            <button on:click={()=>editing=true}>
-                <Fa icon={faPencil}/>
-            </button>
-        </td>
-    {/if}
-</tr>
+{#if (editing)}
+    <input bind:value={account.name} placeholder="Name">
+    <input bind:value={account.email} placeholder="Email">
+    <input bind:value={account.phoneNumber} placeholder="Phone Number">
+    <input bind:value={account.address} placeholder="Address">
+
+    <button on:click={save}>
+        <Fa icon={faSave}/>
+    </button>
+
+{:else }
+    <p>{account.name}</p>
+    <p>{account.email}</p>
+    <p>{account.phoneNumber}</p>
+    <p>{account.address}</p>
+    <div>
+
+        <button on:click={()=>editing=true}>
+            <Fa icon={faPencil}/>
+        </button>
+    </div>
+
+{/if}
 
 
 <style lang="postcss">
     td {
         @apply py-1 px-2;
+    }
+
+    p, button {
+        @apply col-auto ;
     }
 </style>

@@ -14,11 +14,11 @@
     {#await accountsPromise}
         <p>Waiting...</p>
     {:then accounts}
-        <table>
+        <div class="grid grid-cols-5">
         {#each accounts as account}
             <Account bind:account/>
         {/each}
-        </table>
+        </div>
     {:catch error}
         <p class="text-xl">{error}</p>
     {/await}
