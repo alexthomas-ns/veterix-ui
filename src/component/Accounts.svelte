@@ -14,9 +14,10 @@
     {#await accountsPromise}
         <p>Waiting...</p>
     {:then accounts}
-        <div class="grid grid-cols-5">
+        <div class="2xl:grid 2xl:grid-cols-6">
         {#each accounts as account}
             <Account bind:account on:requestRefresh={()=>{accountsPromise=getAccounts()}}/>
+            <hr class="lg:hidden"/>
         {/each}
         </div>
     {:catch error}

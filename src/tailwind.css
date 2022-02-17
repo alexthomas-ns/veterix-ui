@@ -6,7 +6,7 @@ button{
     @apply px-3 py-1 border-2 rounded-md hover:bg-blue-400 hover:drop-shadow-lg border-slate-600
 }
 
-input{
+input,select{
     @apply rounded-md border-2 bg-slate-700 border-slate-600 px-1 box-border mx-1
 }
 

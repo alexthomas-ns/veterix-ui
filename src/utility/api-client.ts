@@ -13,7 +13,7 @@ export function fromEntity<T>(entity:T):LinkedResponse<T>{
     return new LinkedResponse<T>(()=>Promise.resolve().then(()=>entity))
 }
 
-function applyTemplate(link:Link,params:object):string{
+function resolveTemplatedUrl(link:Link,params:object):string{
     let href = link.href;
     if(!link.templated){
         return href;
@@ -29,17 +29,18 @@ function applyTemplate(link:Link,params:object):string{
     if(!params){
         throw `when expanding reference template params were ${params}, a value was expected`
     }
-    Object.keys(params).forEach(expectedParams.delete)
+    Object.keys(params).forEach(x=>expectedParams.delete(x))
     if(expectedParams.size>0){
-        throw `Params missing ${expectedParams}`
+        throw `Params missing ${[...expectedParams]}`
     }
     for(const key in params){
         href = href.replaceAll(`{${key}}`,params[key])
     }
+    return href;
 
 }
 
-export class LinkedResponse<T extends Linked&Embeddible> {
+export class LinkedResponse<T extends Linked&Embeddible&Templated> {
     constructor(private _fetch:()=>Promise<T>){}
     private _instance:T;
     private pendingLocks = [];
@@ -77,7 +78,7 @@ export class LinkedResponse<T extends Linked&Embeddible> {
        throw "Unable to find links"
     }
 
-    public async getData(uncached?:boolean):Promise<Readonly<Omit<T, "links"|"_links"|'_embedded'>>> {
+    public async getData(uncached?:boolean):Promise<Readonly<Omit<T, "links"|"_links"|'_embedded'|'_templates'>>> {
         if(uncached){
             await this.loadInstance();
         } else{
@@ -89,21 +90,26 @@ export class LinkedResponse<T extends Linked&Embeddible> {
         return this._instance;
     }
 
-    private async resolveReference<M extends Linked>(reference:keyof T["links"]|keyof T['_links'],params?:object):Promise<string>{
+    public async  getLinkedData<M>(reference:keyof T["links"]|keyof T['_links']):Promise<M>{
+        const link = await this.resolveReference(reference);
+        return client.get(link).json<M>();
+    }
+
+    private async resolveReference(reference:keyof T["links"]|keyof T['_links'],params?:object):Promise<string>{
         await this.ensureRequest()
         const links = await this.getLinks();
         if(!links[reference]){
             throw `${reference} is not a valid link. Please choose from ${Object.keys(links)}`
         }
-        let url = applyTemplate(links[reference],params);
+        let url = resolveTemplatedUrl(links[reference],params);
         if(url.startsWith("/")) {
             url = url.substring(1);
         }
         return url;
     }
 
-    public getReference<M extends Linked>(reference:keyof T["links"]|keyof T['_links']):LinkedResponse<M>{
-       return new LinkedResponse<M>(()=>this.resolveReference(reference).then(url=>internalGet(url).json<M>()) )
+    public getReference<M extends Linked>(reference:keyof T["links"]|keyof T['_links'],params?:object):LinkedResponse<M>{
+       return new LinkedResponse<M>(()=>this.resolveReference(reference,params).then(url=>internalGet(url).json<M>()) )
     }
 
     public async putReference<M> (reference:keyof T["links"]|keyof T['_links'],value:object,params?:object):Promise<M>{
@@ -120,6 +126,35 @@ export class LinkedResponse<T extends Linked&Embeddible> {
         const deleteUrl = await this.resolveReference(reference,params);
         return client.delete(deleteUrl).then();
     }
+
+    public async executeTemplate<M>(reference:keyof T['_templates'],values:object):Promise<M>{
+        await this.ensureRequest();
+        const templates: T['_templates'] =  this._instance._templates;
+        const template = templates[reference];
+        const expectedParams = new Set<string>();
+        let href = template.target;
+        if(href.startsWith("/")){
+            href=href.substring(1);
+        }
+        for(const property of template.properties){
+            expectedParams.add(property.name);
+        }
+        Object.keys(values).forEach(x=>expectedParams.delete(x))
+        if(expectedParams.size>0){
+            throw `Value(s) missing [${[...expectedParams]}]`
+        }
+        const requestBody = {}
+        for(const property of template.properties){
+            requestBody[property.name] = values[property.name];
+            //todo: verify type
+        }
+        switch (template.method) {
+            case "GET": return client.get(href).json<M>();
+            case "DELETE": return client.delete(href).json<M>();
+            case "POST": return client.post(href,{json:requestBody}).json<M>();
+            case "PUT": return client.put(href,{json:requestBody}).json<M>();
+        }
+    }
 }
 
 export interface Link {
@@ -132,4 +167,20 @@ export type Linked = {links?:Links} & {_links?:Links}
 
 interface Embeddible{
     _embedded?:never
+}
+
+interface Templated{
+    _templates?:{[key:string]:Template}
+}
+
+export interface Template {
+   method: 'GET'|'POST'|'PUT'|'DELETE';
+   target: string;
+   properties: Array<TemplateProperty>
+}
+
+interface TemplateProperty{
+    name: string,
+    readonly : string,
+    type: 'text'|'number'
 }

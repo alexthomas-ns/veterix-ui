@@ -5,6 +5,7 @@ interface RootEntity {
     links: {
         account: Link,
         accounts: Link,
+        types: Link,
         'examination-room': Link,
         'examination-rooms': Link
     }
