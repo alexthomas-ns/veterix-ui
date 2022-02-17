@@ -30,7 +30,6 @@
     <p>waiting...</p>
 {:then [account,types]}
     <p class="text-2xl mb-4">Add a pet to {account.name}'s account</p>
-    <div class="max-w-lg">
         <div class="grid grid-cols-2 gap-2">
             <label for="age">Age</label>
             <input id="age" type="number" bind:value={request.age} placeholder="Age"/>
@@ -45,11 +44,10 @@
                     {/each}
             </select>
         </div>
-        <button class="primary float-right mt-2" on:click={save(account)}>
+        <button class="primary float-right mt-2 mr-1" on:click={save(account)}>
             <Fa icon={faSave} class="inline-block"/>
             Save
         </button>
-    </div>
 {:catch error}
     <p>{error}</p>
 {/await}

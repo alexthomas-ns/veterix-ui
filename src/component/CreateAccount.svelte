@@ -21,7 +21,6 @@
     {#if error}
         <p class="text-red-500 text-2xl">{error}</p>
     {/if}
-    <div class="max-w-lg">
         <div class="grid grid-cols-2 gap-2">
         <label for="name">Name</label>
         <input id="name" bind:value={account.name} placeholder="Name">
@@ -32,10 +31,9 @@
         <label for="address">Address</label>
         <input id="address" bind:value={account.address} placeholder="Address">
         </div>
-    <button on:click={save} class="primary float-right mt-2">
+    <button on:click={save} class="primary float-right mt-2 mr-1">
         <Fa icon={faSave} class="inline-block"/>&nbsp; Save
     </button>
-    </div>
 </main>
 
 <style>

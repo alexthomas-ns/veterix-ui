@@ -17,7 +17,7 @@
         <div class="2xl:grid 2xl:grid-cols-6">
         {#each accounts as account}
             <Account bind:account on:requestRefresh={()=>{accountsPromise=getAccounts()}}/>
-            <hr class="lg:hidden"/>
+            <hr class="2xl:hidden"/>
         {/each}
         </div>
     {:catch error}

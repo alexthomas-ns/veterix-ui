@@ -5,6 +5,16 @@
 </script>
 
 <Navbar/>
-<div class="m-3 lg:container">
+<div class="lg:layout-container m-3 ">
     <slot/>
 </div>
+
+<style>
+
+    @tailwind components;
+    @layer components {
+        .layout-container {
+            @apply container mx-auto;
+        }
+    }
+</style>
