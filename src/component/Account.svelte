@@ -5,9 +5,11 @@
     import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
     import {createEventDispatcher} from "svelte";
     import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
-    import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
     import {faDog} from "@fortawesome/free-solid-svg-icons/faDog";
     import {faCreditCard} from "@fortawesome/free-solid-svg-icons/faCreditCard";
+    import FaLayers from "svelte-fa/src/fa-layers.svelte";
+    import {faCirclePlus} from "@fortawesome/free-solid-svg-icons/faCirclePlus";
+    import {faCircle} from "@fortawesome/free-solid-svg-icons/faCircle";
 
     export let account: AccountModel;
 
@@ -53,7 +55,7 @@
     <p>{account.email}</p>
     <p>{account.phoneNumber}</p>
     <p>{account.address}</p>
-    <p>{account.pets&&account.pets.length || 0}</p>
+    <p>{account.pets && account.pets.length || 0}</p>
     <div>
 
         <button on:click={()=>editing=true}>
@@ -62,16 +64,23 @@
         <button on:click={doDelete} class="hover:bg-red-500">
             <Fa icon={faTrash}/>
         </button>
-        <a href={`account/${account.id}/add-pet`}>
-        <button class="space-x-1">
-            <Fa class="inline-block" pull="left" icon={faPlus}/>
-            <Fa class="inline-block" pull="left" icon={faDog}/>
-        </button>
+        <a href={`/account/${account.id}/add-pet`}>
+            <button class="space-x-1">
+            <FaLayers class={"!block"}>
+                <Fa translateX={.2} icon={faDog}/>
+                <Fa translateX={-.33} translateY=".27" class="inline-block text-slate-800" size="sm" icon={faCircle} />
+                <Fa  translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
+            </FaLayers>
+            </button>
         </a>
         <button class="space-x-1">
-            <Fa class="inline-block" pull="left" icon={faPlus}/>
-            <Fa class="inline-block" pull="left" icon={faCreditCard}/>
+            <FaLayers class={"!block"}>
+                <Fa translateX={.2} icon={faCreditCard}/>
+                <Fa translateX={-.33} translateY=".27" class="inline-block text-slate-800" size="sm" icon={faCircle} />
+                <Fa  translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
+            </FaLayers>
         </button>
+
     </div>
 
 {/if}
@@ -80,5 +89,9 @@
 <style lang="postcss">
     p, button {
         @apply col-auto ;
+    }
+
+    input {
+        display: block;
     }
 </style>
