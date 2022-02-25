@@ -11,11 +11,12 @@
     $: dataPromise = Promise.all([accountPromise,petTypesPromise]);
     let error;
     const request = {};
+    let species;
 
     function save(account): () => Promise<never> {
         return async () => {
             try {
-                await addPet(account, request as Pet);
+                await addPet(account, {...request,species} as Pet);
                 window.location = '/accounts';
             } catch (e) {
                 error = e;
@@ -38,7 +39,7 @@
             <label for="name">Name</label>
             <input id="name" bind:value={request.name} placeholder="Name"/>
             <label for="species">Species</label>
-            <select id="species" bind:value={request.species}>
+            <select id="species" bind:value={species}>
                 {#each types as petType}
                 <option value={petType}>{petType.name}</option>
                     {/each}
