@@ -13,3 +13,10 @@ input,select{
 button.primary{
     @apply hover:bg-blue-600 bg-blue-400 border-blue-400 text-neutral-100
 }
+
+button svg {
+    display: inline;
+    @apply mr-1;
+}
+
+

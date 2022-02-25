@@ -45,7 +45,7 @@
             </select>
         </div>
         <button class="primary float-right mt-2 mr-1" on:click={save(account)}>
-            <Fa icon={faSave} class="inline-block"/>
+            <Fa icon={faSave} />
             Save
         </button>
 {:catch error}

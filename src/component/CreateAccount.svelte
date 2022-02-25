@@ -32,7 +32,7 @@
         <input id="address" bind:value={account.address} placeholder="Address">
         </div>
     <button on:click={save} class="primary float-right mt-2 mr-1">
-        <Fa icon={faSave} class="inline-block"/>&nbsp; Save
+        <Fa icon={faSave}/>&nbsp; Save
     </button>
 </main>
 

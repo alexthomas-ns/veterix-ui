@@ -7,11 +7,13 @@
     import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
     import {faDog} from "@fortawesome/free-solid-svg-icons/faDog";
     import {faCreditCard} from "@fortawesome/free-solid-svg-icons/faCreditCard";
+    import {faBinoculars} from "@fortawesome/free-solid-svg-icons/faBinoculars";
     import FaLayers from "svelte-fa/src/fa-layers.svelte";
     import {faCirclePlus} from "@fortawesome/free-solid-svg-icons/faCirclePlus";
     import {faCircle} from "@fortawesome/free-solid-svg-icons/faCircle";
 
     export let account: AccountModel;
+    export let hideButtons: boolean;
 
     let editing = false;
     let error;
@@ -56,32 +58,40 @@
     <p>{account.phoneNumber}</p>
     <p>{account.address}</p>
     <p>{account.pets && account.pets.length || 0}</p>
-    <div>
-
-        <button on:click={()=>editing=true}>
-            <Fa icon={faPencil}/>
-        </button>
-        <button on:click={doDelete} class="hover:bg-red-500">
-            <Fa icon={faTrash}/>
-        </button>
-        <a href={`/account/${account.id}/add-pet`}>
-            <button class="space-x-1">
-            <FaLayers class={"!block"}>
-                <Fa translateX={.2} icon={faDog}/>
-                <Fa translateX={-.33} translateY=".27" class="inline-block text-slate-800" size="sm" icon={faCircle} />
-                <Fa  translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
-            </FaLayers>
+    {#if !hideButtons}
+        <div>
+            <a href={`/account/${account.id}`}>
+                <button>
+                    <Fa icon={faBinoculars}/>
+                </button>
+            </a>
+            <button on:click={()=>editing=true}>
+                <Fa icon={faPencil}/>
             </button>
-        </a>
-        <button class="space-x-1">
-            <FaLayers class={"!block"}>
-                <Fa translateX={.2} icon={faCreditCard}/>
-                <Fa translateX={-.33} translateY=".27" class="inline-block text-slate-800" size="sm" icon={faCircle} />
-                <Fa  translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
-            </FaLayers>
-        </button>
+            <button on:click={doDelete} class="hover:bg-red-500">
+                <Fa icon={faTrash}/>
+            </button>
+            <a href={`/account/${account.id}/add-pet`}>
+                <button class="space-x-1 highlight-child">
+                    <FaLayers class={"!block"}>
+                        <Fa translateX={.2} icon={faDog}/>
+                        <Fa translateX={-.33} translateY=".27" class="inline-block child text-slate-800" size="sm"
+                            icon={faCircle}/>
+                        <Fa translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
+                    </FaLayers>
+                </button>
+            </a>
+            <button class="space-x-1 highlight-child">
+                <FaLayers class={"!block"}>
+                    <Fa translateX={.2} icon={faCreditCard}/>
+                    <Fa translateX={-.33} translateY=".27" class="inline-block text-slate-800 child" size="sm"
+                        icon={faCircle}/>
+                    <Fa translateX={-.4} translateY=".3" icon={faCirclePlus} size="xs"/>
+                </FaLayers>
+            </button>
 
-    </div>
+        </div>
+    {/if}
 
 {/if}
 
@@ -94,4 +104,14 @@
     input {
         display: block;
     }
+
+    .highlight-child:hover :global(.child) {
+        @apply text-blue-400;
+    }
+
+    button :global(svg) {
+        display: block ;
+        margin: 0 ;
+    }
+
 </style>

@@ -4,7 +4,7 @@ import {fromEntity} from "@utility/api-client";
 import type {Type} from "@service/types-service";
 
 interface AccountEntity {
-    _links: {self:Link}
+    _links: { self: Link }
     accountList: Array<Account>
 
 }
@@ -17,8 +17,8 @@ export interface Account {
     address: string,
     pets?: Array<Pet>,
     paymentInformation?: Array<PaymentInformation>,
-    _links: { self: Link },
-    _templates: {createPet: Template}
+    _links: { self: Link, all: Link, pets: Link, pet: Link },
+    _templates: { createPet: Template }
 }
 
 export interface Pet {
@@ -43,19 +43,26 @@ export async function updateAccount(account: Account): Promise<Account> {
     const {name, email, phoneNumber, address} = account;
     return fromEntity(account).putReference("self", {name, email, phoneNumber, address});
 }
+
 export async function saveAccount(account: Account): Promise<Account> {
     const {name, email, phoneNumber, address} = account;
     return rootEntity.postReference("accounts", {name, email, phoneNumber, address});
 }
 
-export async function deleteAccount(account: Account):Promise<never>{
-   return fromEntity(account).deleteReference("self");
+export async function deleteAccount(account: Account): Promise<never> {
+    return fromEntity(account).deleteReference("self");
 }
 
-export async function getAccount(accountId:string): Promise<Omit<Account,"_links"|"_templates">> {
-    return rootEntity.getReference<Account>("account",{accountId}).getData();
+export async function getAccount(accountId: string): Promise<Omit<Account, "_links" | "_templates">> {
+    return rootEntity.getReference<Account>("account", {accountId}).getData();
 }
 
-export async function addPet(account:Account,pet:Pet){
-    return fromEntity(account).executeTemplate("createPet",pet);
+export async function addPet(account: Account, pet: Pet) {
+    return fromEntity(account).executeTemplate("createPet", pet);
 }
+
+export async function deletePet(account:Account,pet:Pet){
+    return fromEntity(account).deleteReference("pet",{petId:pet.id});
+}
+
+export default {getAccounts,getAccount,updateAccount,deleteAccount,saveAccount,addPet,deletePet}
