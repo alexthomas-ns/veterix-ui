@@ -7,7 +7,9 @@ interface RootEntity {
         accounts: Link,
         types: Link,
         'examination-room': Link,
-        'examination-rooms': Link
+        'examination-rooms': Link,
+        appointments: Link,
+        'appointment-availability': Link
     }
 }
 

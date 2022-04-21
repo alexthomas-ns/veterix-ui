@@ -78,7 +78,7 @@ export class LinkedResponse<T extends Linked&Embeddible&Templated> {
        throw "Unable to find links"
     }
 
-    public async getData(uncached?:boolean):Promise<Readonly<Omit<T, "links"|"_links"|'_embedded'|'_templates'>>> {
+    public async getData(uncached?:boolean,):Promise<Readonly<Omit<T, "links"|"_links"|'_embedded'|'_templates'>>> {
         if(uncached){
             await this.loadInstance();
         } else{
